@@ -1,10 +1,7 @@
 import { defineConfig } from 'vite'
 
-// Get the repository name from package.json
-const repositoryName = 'testtest' // Replace this with your actual repository name
-
 export default defineConfig({
-  base: `/${repositoryName}/`,
+  base: './',
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
