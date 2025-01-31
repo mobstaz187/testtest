@@ -46,7 +46,7 @@ const copiedMessage = contractAddress.querySelector('.copied-message');
 
 contractAddress.addEventListener('click', async () => {
   try {
-    await navigator.clipboard.writeText('FasH397CeZLNYWkd3wWK9vrmjd1z93n3b59DssRXpump');
+    await navigator.clipboard.writeText('Updating...');
     copiedMessage.classList.add('show');
     setTimeout(() => {
       copiedMessage.classList.remove('show');
