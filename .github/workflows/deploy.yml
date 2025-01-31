@@ -2,20 +2,11 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: ['main']
+    branches: [ main ]
   workflow_dispatch:
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: 'pages'
-  cancel-in-progress: true
-
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -27,31 +18,15 @@ jobs:
           node-version: '18'
           cache: 'npm'
 
-      - name: List files before install
-        run: ls -la
-        
       - name: Install Dependencies
-        run: |
-          echo "Installing dependencies..."
-          npm ci
-          echo "Dependencies installed"
-          npm list
+        run: npm ci
 
       - name: Build
-        run: |
-          echo "Starting build..."
-          npm run build
-          echo "Build completed"
-          ls -la dist/
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist
+        run: npm run build
 
       - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist
+          branch: gh-pages
+          clean: true
