@@ -38,7 +38,7 @@ function createBackgroundElements() {
 createBackgroundElements();
 
 // Create audio element
-const rollSound = new Audio('./oia.mp3');
+const rollSound = new Audio('oia.mp3');
 
 // Setup contract address copy functionality
 const contractAddress = document.getElementById('contractAddress');
@@ -89,7 +89,7 @@ function createHappyCats() {
   
   for (let i = 0; i < numberOfCats; i++) {
     const cat = document.createElement('img');
-    cat.src = './happy-cat.gif';
+    cat.src = 'happy-cat.gif';
     cat.className = 'happy-cat';
     
     // Random position
@@ -111,7 +111,7 @@ function createFloatingUiiai() {
   
   for (let i = 0; i < numberOfGifs; i++) {
     const floatingGif = document.createElement('img');
-    floatingGif.src = './oia-uia.gif';
+    floatingGif.src = 'oia-uia.gif';
     floatingGif.className = 'floating-uiiai';
     
     // Random position
@@ -130,7 +130,7 @@ function createFloatingUiiai() {
 // Function to play result video
 function playResultVideo(result) {
   // Set the video source
-  resultVideo.src = `./video/${result}.mp4`;
+  resultVideo.src = `video/${result}.mp4`;
   
   // Play the video when it's loaded
   resultVideo.onloadeddata = () => {
@@ -171,7 +171,7 @@ function roll() {
   
   // Force GIF reload to restart animation
   const timestamp = new Date().getTime();
-  uiiaiGif.src = `./oia-uia.gif?t=${timestamp}`;
+  uiiaiGif.src = `oia-uia.gif?t=${timestamp}`;
   
   // Create happy cats and floating uiiai
   createHappyCats();
@@ -190,4 +190,4 @@ function roll() {
 document.getElementById('rollButton').addEventListener('click', roll);
 
 // Initial load of the GIF
-uiiaiGif.src = './oia-uia.gif';
+uiiaiGif.src = 'oia-uia.gif';
