@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Roll uiiai</title>
+    <link rel="icon" type="image/gif" href="/roll-uiiai/assets/oia-uia-801fba74.gif">
+    <style>
+      body {
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        font-family: Arial, sans-serif;
+        background-color: #0066cc;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .background-elements {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      .particle {
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        background: white;
+        border-radius: 50%;
+        opacity: 0.15;
+        animation: float 20s linear infinite;
+      }
+
+      @keyframes float {
+        0% {
+          transform: translate(0, 0) rotate(0deg);
+        }
+        100% {
+          transform: translate(var(--moveX), var(--moveY)) rotate(var(--rotation));
+        }
+      }
+
+      .sparkle {
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        background: white;
+        border-radius: 50%;
+        animation: sparkle 2s ease-in-out infinite;
+      }
+
+      @keyframes sparkle {
+        0%, 100% { 
+          transform: scale(1);
+          opacity: 0.3;
+        }
+        50% { 
+          transform: scale(2);
+          opacity: 0.8;
+        }
+      }
+
+      .content-wrapper {
+        height: 450px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        position: relative;
+        z-index: 2;
+        padding: 2rem;
+        gap: 2rem;
+        transition: gap 0.3s ease;
+      }
+
+      .content-wrapper.rolling {
+        gap: 0;
+      }
+
+      #gifContainer {
+        width: 300px;
+        height: 300px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: transform 0.3s ease;
+      }
+
+      .rolling #gifContainer {
+        transform: translateY(-60px);
+      }
+
+      #uiiaiGif {
+        max-width: 100%;
+        max-height: 100%;
+      }
+
+      #videoContainer {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        pointer-events: none;
+      }
+
+      #resultVideo {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      @keyframes rainbow {
+        0% { filter: hue-rotate(0deg); }
+        100% { filter: hue-rotate(360deg); }
+      }
+      
+      @keyframes wobble {
+        0%, 100% { transform: rotate(0deg) scale(1); }
+        25% { transform: rotate(-5deg) scale(1.1); }
+        75% { transform: rotate(5deg) scale(1.1); }
+      }
+      
+      @keyframes glow {
+        0%, 100% { box-shadow: 
+          0 4px 8px rgba(0,0,0,0.3),
+          0 0 0 8px #999,
+          0 0 0 12px #777,
+          0 0 20px #ff4444,
+          0 0 40px #ff4444; }
+        50% { box-shadow: 
+          0 4px 8px rgba(0,0,0,0.3),
+          0 0 0 8px #999,
+          0 0 0 12px #777,
+          0 0 40px #ff4444,
+          0 0 80px #ff4444; }
+      }
+
+      button {
+        width: 120px;
+        height: 120px;
+        padding: 0;
+        border-radius: 50%;
+        background: linear-gradient(45deg, #ff4444, #ff8f00, #ffeb3b, #4caf50, #2196f3, #9c27b0);
+        background-size: 600% 600%;
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+        text-transform: uppercase;
+        position: relative;
+        box-shadow: 
+          0 4px 8px rgba(0,0,0,0.3),
+          0 0 0 8px #999,
+          0 0 0 12px #777;
+        animation: 
+          rainbow 5s linear infinite,
+          wobble 2s ease-in-out infinite,
+          glow 1.5s ease-in-out infinite;
+        text-shadow: 
+          2px 2px 0 #000,
+          -2px -2px 0 #000,
+          2px -2px 0 #000,
+          -2px 2px 0 #000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+        white-space: pre;
+        aspect-ratio: 1;
+      }
+
+      button span {
+        display: block;
+        text-align: center;
+        width: 100%;
+      }
+
+      button:hover {
+        animation: 
+          rainbow 2s linear infinite,
+          wobble 0.5s ease-in-out infinite,
+          glow 0.8s ease-in-out infinite;
+      }
+
+      button:active {
+        transform: scale(0.95);
+        animation: 
+          rainbow 1s linear infinite,
+          glow 0.3s ease-in-out infinite;
+      }
+
+      #result {
+        height: 36px;
+        font-size: 48px;
+        font-weight: 900;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-transform: uppercase;
+        color: #00ffff;
+        text-shadow: 
+          3px 3px 0 #ff00ff,
+          -3px -3px 0 #ff00ff;
+        animation: resultBounce 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        transform: scale(0);
+        letter-spacing: 2px;
+      }
+
+      @keyframes resultBounce {
+        0% {
+          transform: scale(0);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      @keyframes resultBg {
+        0% {
+          background-position: 0% 50%;
+        }
+        100% {
+          background-position: 400% 50%;
+        }
+      }
+
+      .happy-cat {
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        pointer-events: none;
+        z-index: 1;
+        opacity: 0;
+        animation: fadeInOut 4s ease-in-out forwards;
+      }
+
+      .floating-uiiai {
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        pointer-events: none;
+        z-index: 1;
+        opacity: 0;
+        animation: fadeInOut 4s ease-in-out forwards;
+      }
+
+      @keyframes fadeInOut {
+        0% { opacity: 0; }
+        10% { opacity: 1; }
+        90% { opacity: 1; }
+        100% { opacity: 0; }
+      }
+
+      .corner-gifs {
+        position: fixed;
+        bottom: 10px;
+        left: 10px;
+        z-index: 9999;
+        display: flex;
+        gap: 10px;
+        pointer-events: none;
+      }
+
+      .corner-gif {
+        width: 80px;
+        height: 80px;
+        object-fit: contain;
+      }
+
+      .social-corner {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 10px;
+      }
+
+      .twitter-link {
+        color: white;
+        text-decoration: none;
+        font-size: 24px;
+        padding: 10px 15px;
+        background: linear-gradient(45deg, #1da1f2, #0077b5, #00aced);
+        border-radius: 12px;
+        transition: all 0.3s;
+        animation: rainbow 3s linear infinite;
+        text-shadow: 
+          2px 2px 0 #000,
+          -2px -2px 0 #000,
+          2px -2px 0 #000,
+          -2px 2px 0 #000;
+      }
+
+      .twitter-link:hover {
+        transform: scale(1.1) rotate(-5deg);
+        animation: rainbow 1s linear infinite;
+      }
+
+      .contract-address {
+        background: linear-gradient(45deg, #ff6b6b, #ff9f43, #ffd32a);
+        padding: 12px 16px;
+        border-radius: 12px;
+        color: white;
+        font-family: monospace;
+        cursor: pointer;
+        transition: all 0.3s;
+        animation: rainbow 3s linear infinite;
+        text-shadow: 
+          1px 1px 0 #000,
+          -1px -1px 0 #000,
+          1px -1px 0 #000,
+          -1px 1px 0 #000;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      }
+
+      .contract-address:hover {
+        transform: scale(1.1) rotate(3deg);
+        animation: rainbow 1s linear infinite;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+      }
+
+      .copied-message {
+        position: absolute;
+        right: 0;
+        top: -30px;
+        background: linear-gradient(45deg, #00f260, #0575e6);
+        color: white;
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 14px;
+        opacity: 0;
+        transition: all 0.3s;
+        animation: rainbow 3s linear infinite;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+      }
+
+      .copied-message.show {
+        opacity: 1;
+        transform: translateY(-5px);
+      }
+    </style>
+    <script type="module" crossorigin src="/roll-uiiai/assets/index-d43f5d1f.js"></script>
+  </head>
+  <body>
+    <div class="background-elements"></div>
+    <div class="social-corner">
+      <a href="https://x.com/oiiai_uiiai" target="_blank" class="twitter-link">𝕏</a>
+      <div class="contract-address" id="contractAddress">
+        Updating....
+        <div class="copied-message">Copied!</div>
+      </div>
+    </div>
+    <div class="corner-gifs">
+      <img src="/roll-uiiai/assets/happy-cat-7400f45e.gif" alt="Happy Cat" class="corner-gif">
+      <img src="/roll-uiiai/assets/oia-uia-801fba74.gif" alt="uiiai" class="corner-gif">
+    </div>
+    <div id="videoContainer">
+      <video id="resultVideo">
+        <source src="" type="video/mp4">
+      </video>
+    </div>
+    <div class="content-wrapper">
+      <button id="rollButton"><span>Roll<br>uiiai</span></button>
+      <div id="gifContainer">
+        <img id="uiiaiGif" src="/roll-uiiai/assets/oia-uia-801fba74.gif" alt="uiiai">
+      </div>
+      <div id="result"></div>
+    </div>
+    
+  </body>
+</html>
